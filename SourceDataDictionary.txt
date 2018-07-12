@@ -1,0 +1,74 @@
+Date
+Calendar Date of transaction.  Values in this R analysis presented as Excel Serial values.
+
+DoW M=1
+Transaction's Day of the Week, where 1 = Monday.  Values are integers 1 - 7.
+
+Local Time
+Local time at the place of expenditure to the nearest quarter hour.  Not included in 
+	this R analysis.
+
+Country
+Country where transaction took place, if not an online transaction.  These values are 
+	currently incomplete, but as of 12 July 2018 I am working to backfill so I can do some
+	GIS analysis.  Not included in this R analysis.
+
+State
+State where transaction took place, if not an online transaction.  These values are 
+	currently incomplete, but as of 12 July 2018 I am working to backfill so I can do some
+	GIS analysis.  Not included in this R analysis.
+
+City
+City where transaction took place, if not an online transaction.  Not included in this R 
+	analysis.
+
+Zip Code
+Zip Code where transaction took place, if not an online transaction.  These values are 
+	currently incomplete, but as of 12 July 2018 I am working to backfill so I can do some
+	GIS analysis.  Not included in this R analysis.
+
+Method of Payment
+From what pool of resources was this transaction paid.  Not included in this R analysis.
+
+Vendor
+To what entity was this transaction paid.  Not included in this R analysis.
+
+Purchaser
+Did I, my wife, or both of us arrange this transaction.  Not included in this R analysis.
+
+Good or Service
+Classification of the transaction.  In an actual Accounting/ERP system, this would be 
+	something like a narrative natural account number.  Not included in this R analysis.
+
+Note/Comments
+Brief narrative description of what the transaction was about/for.  Not included in this 
+	R analysis.
+
+Exp'd?
+Was this transaction expensed with an employer or other.  Not included in this R analysis.
+
+Reimb?
+Is this transaction a reimbursement of a previously expensed transaction(s).  Not included
+	 in this R analysis.
+
+Recur?
+Does this transaction recur regularly (minimum frequency is quarterly).  Not included in 
+	this R analysis.
+
+Traveling?
+Was this transaction made while traveling away from home.  Not included in this R 
+	analysis.
+
+In Pers?
+Was this transaction made in person.  Not included in this R analysis.
+
+Debit
+The Debit value of the transaction.  For my own purposes, Debit means outbound value of
+	the transaction (I buy a coffee, what I pay is what I gave up/sent out for what I 
+	got).  Values are numeric to two decimal places.
+
+Credit
+The Credit value of the transaction.  For my own purposes, Credit means inbound value of
+	the transaction (I find $10 on the sidewalk, or I return a purchase, that's inbound
+	value).  Values are numeric to two decimal places.
+

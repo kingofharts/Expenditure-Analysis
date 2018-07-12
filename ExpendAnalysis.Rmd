@@ -5,7 +5,7 @@
 
 This R markdown file contains the necessary markdown, commentary, and code to produce a knitr'd PDF presenting my analysis of my wife and I's US Dollar Expenditure Data from ~April 2014 to ~July 2018.
 
-This file assumes that the provided data source file ("PersonalExpenditureData.zip") is available in your working directory.
+This file assumes that all files in the github repo are available in your R working directory.
 
 This analysis is intended to provide a demonstrative sample of my ability to conduct and narrate analysis using self-developed institutional knowledge (personal data, self-assembled; I'm aware of contextual, absent metadata), Excel, and R.
 
@@ -21,28 +21,75 @@ As we are repatriating to the US in August, and I am currently seeking work in a
 
 ## Premise
 
-My wife and I, both early/mid-career, white-collar professionals, have generally adhered to the Monday - Friday workweek conventional in the west.  As most people struggle to spend money during employment hours (excepting lunches, coffee, etc.), it seems safe to say that our expenditures are lower during the week than at the weekend.
+My wife and I, both early/mid-career, white-collar professionals, have generally adhered to the Monday - Friday workweek conventional in the west.  As most people struggle to spend money during employment hours (excepting generally small-dollar lunches, coffee, etc.), my hunch is our daily expenditures are lower during the week than at the weekend.
 
 The question here then is whether I can predict either:
 
 - Weekday from Weekend, or
 - Which specific day of the week
 
-Any particular day is using other attributes of our various expenditures.
+using sum/count of our various expenditures by day.
+
+---
+
+## Plan
+
+To get to either A) a working predictive model or B) a determination that that would require more attributes, I'll:
+
+- consider what's available
+- decide what to export, and whether to aggregate before or after export
+- export to .tld and then repackage/reformat the data in R
+- explore/evaluate and plot the data
+- index & split the data
+- train a couple of models
+- test, see if anything works
+- summarize findings
 
 ---
 
 ## Data, Broadly
 
-As part of my wife and I's personal financial hygiene, I have recorded each of our US Dollar financial transactions from ~April 2014.  The collected columns/attributes have grown and adjusted over time, but the core of Date, Local Time to the quarter hour, Vendor, and Dr/Cr amounts have not changed.
+I have recorded each of our US Dollar financial transactions from ~April 2014.  The columns/attributes have multiplied over time, but the core of Date, Local Time to the quarter hour, Vendor, and Dr/Cr amounts have not changed.
 
+While I have recorded all of our USD transactions, for this analysis I will be looking only at expenditures, excluding transfers between accounts, credit card payments, etc.
 
+Also filtered out from the data will be expenditures that, for one reason or another, are clearly not relevant to DoW analysis (i.e. rent payments, loan payments, etc. which fall on a fixed calendar date, among other items).  More on this later.
+
+---
+
+## Data, Basic Characteristics
+
+The source data are 7,896 rows (1 Apr 2014 through 12 Jul 2018) across 19 columns of USD transactions.
+
+The transactions are only those in USD because we have spent the majority of our time living and working in the US using the USD, our non-USD expenditures comprise a small minority (both by count and sum) of our total expenditures, and, while I have plans for other uses of these data, tracking historical Point-in-Time exchange rates is not one of them.
+
+A data dictionary for the source is provided as "SourceDataDictionary.txt".  It uses column names as formatted in Excel, but the sequence of columns is unchanged from below.  The columns are:
+
+```{r echo=TRUE}
+
+## Read in precanned Column Names
+
+AllColNames <- read.delim("AllColNames.txt")
+
+AllColNames
+
+```
+
+For this analysis I've decided to use four: Date, DoW, Debit, and Credit.  Date will be used to aggregate, rather than for prediction (pretty easy to predict DoW if you know what the date is).
 
 ---
 
 ## Data, Quality
 
-While I'm certain the data are not 100% perfect, I am similarly certain that the error rate is negligibly small.  Informed by professional habits, I've been disciplined about data entry habits/controls (various account rec's, etc., personal month-end closes, etc.) such that errors, where they exist, are not material.
+While I'm certain the data are not 100% perfect, I am similarly certain that the error rate is negligibly small.
+
+Informed by professional habits, I've been disciplined about data entry habits/controls (various account rec's, etc., personal month-end closes, etc.) such that errors, where they exist, are not material.  Known errors are generally something like, "I spent $15 in cash, but how much was at the Food Truck and how much was the bottle of water at the kiosk?  Can't remember, put it all in as Food Truck."
+
+There are a number of blank values across a handful of columns I'm working to backfill, however none of these columns are used in this analysis.
+
+---
+
+## Initial Excel Decisions
 
 
 

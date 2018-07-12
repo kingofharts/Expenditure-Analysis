@@ -1,0 +1,1 @@
+Date	DoW M=1	Local Time	Country	State	City	Zip Code	Method of Payment	Vendor	Purchaser	Good or Service	Note/Comments	Exp'd?	Reimb?	Recur?	Traveling?	In Pers?	Debit	Credit
