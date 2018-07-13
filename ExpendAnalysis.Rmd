@@ -1,14 +1,15 @@
-# Predictive Power of Expenditures Analysis
+# Day of Week Prediction Power of Expenditures Analysis
 ## Nicholas Hartman Ponce
-## nicholas.paul.hartman@gmail.com
-## :: [github/repo](https://github.com/kingofharts/Expenditure-Analysis)
+### nicholas.paul.hartman@gmail.com
+### [Github Repo](https://github.com/kingofharts/Expenditure-Analysis)
 
-This R markdown file contains the necessary markdown, commentary, and code to produce a knitr'd PDF presenting my analysis of my wife and I's US Dollar Expenditure Data from ~April 2014 to ~July 2018.
+```{r echo = TRUE}
+# This R markdown file contains the necessary markdown, commentary, and code to produce a knitr'd presentation my analysis of my wife and I's US Dollar Expenditure Data from ~April 2014 to ~July 2018.
 
-This file assumes that all files in the github repo are available in your R working directory.
+# This file assumes that all files in the github repo are available in your R working directory.
 
-This analysis is intended to provide a demonstrative sample of my ability to conduct and narrate analysis using self-developed institutional knowledge (personal data, self-assembled; I'm aware of contextual, absent metadata), Excel, and R.
-
+# This analysis is intended to provide a demonstrative sample of my ability to conduct and narrate analysis using self-developed institutional knowledge, Excel, and R.
+```
 ---
 
 ## Context
@@ -28,7 +29,7 @@ The question here then is whether I can predict either:
 - Weekday from Weekend, or
 - Which specific day of the week
 
-using sum/count of our various expenditures by day.
+using sum/count of our various expenditures for a given day.
 
 ---
 
@@ -53,17 +54,17 @@ I have recorded each of our US Dollar financial transactions from ~April 2014.  
 
 While I have recorded all of our USD transactions, for this analysis I will be looking only at expenditures, excluding transfers between accounts, credit card payments, etc.
 
-Also filtered out from the data will be expenditures that, for one reason or another, are clearly not relevant to DoW analysis (i.e. rent payments, loan payments, etc. which fall on a fixed calendar date, among other items).  More on this later.
+Also filtered out from the data will be expenditures that, for one reason or another, are clearly not relevant to DoW analysis (i.e. rent payments, loan payments, etc. which fall on a fixed calendar date, among other items).
 
 ---
 
 ## Data, Basic Characteristics
 
-The source data are 7,896 rows (1 Apr 2014 through 12 Jul 2018) across 19 columns of USD transactions.
+The source data are ~7,900 rows (1 Apr 2014 through 12 Jul 2018) across 19 columns of USD transactions.
 
 The transactions are only those in USD because we have spent the majority of our time living and working in the US using the USD, our non-USD expenditures comprise a small minority (both by count and sum) of our total expenditures, and, while I have plans for other uses of these data, tracking historical Point-in-Time exchange rates is not one of them.
 
-A data dictionary for the source is provided as "SourceDataDictionary.txt".  It uses column names as formatted in Excel, but the sequence of columns is unchanged from below.  The columns are:
+A data dictionary for the source is provided as "SourceDataDictionary.txt".  It uses column names as formatted in Excel, but the sequence of columns is unchanged from below.  Here are the columns as dumped raw to R:
 
 ```{r echo=TRUE}
 
@@ -75,7 +76,7 @@ AllColNames
 
 ```
 
-For this analysis I've decided to use four: Date, DoW, Debit, and Credit.  Date will be used to aggregate, rather than for prediction (pretty easy to predict DoW if you know what the date is).
+For this analysis I've decided to limit use to four: Date, DoW, Debit, and Credit.  Date will be used to aggregate, rather than for prediction (pretty easy to predict DoW if you know what the date is).  I'll create a derived Weekday col in R using DoW.
 
 ---
 
@@ -83,36 +84,14 @@ For this analysis I've decided to use four: Date, DoW, Debit, and Credit.  Date 
 
 While I'm certain the data are not 100% perfect, I am similarly certain that the error rate is negligibly small.
 
-Informed by professional habits, I've been disciplined about data entry habits/controls (various account rec's, etc., personal month-end closes, etc.) such that errors, where they exist, are not material.  Known errors are generally something like, "I spent $15 in cash, but how much was at the Food Truck and how much was the bottle of water at the kiosk?  Can't remember, put it all in as Food Truck."
+Informed by professional habits, I've been disciplined about data entry habits/controls (various account rec's, etc., personal month-end closes, etc.) such that errors, where they exist, are not material.
 
-There are a number of blank values across a handful of columns I'm working to backfill, however none of these columns are used in this analysis.
+Known errors are generally something like, "I spent $15 in cash, but how much was at the Food Truck and how much was the bottle of water at the kiosk?  Can't remember, put it all in as Food Truck."
+
+There are a number of blank values across a handful of columns I'm working to backfill in separate efforts, however none of these columns are used in this analysis.
 
 ---
 
 ## Initial Excel Decisions
 
-
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+As mentioned above, not all transactions in the data will be relevant and/or useful for this analysis
