@@ -14,9 +14,9 @@
 
 ## Context
 
-Recently, while reviewing our finances together, my wife and I discussed differences between weekday and weekend spending.  I had already plotted average spend by day-of-week, but I began to ask myself whether the expenditure data held any predictive value.
+My wife and I recently discussed differences between weekday and weekend spending.  I had already plotted average spend by day-of-week, but I began to ask myself whether the expenditure data held any predictive value.
 
-As we are repatriating to the US in August, and I am currently seeking work in analysis in Providence, RI, and demonstrable analytical ability is helpful in that pursuit, a small investigation seemed appropriate - and so here we are.
+As we are repatriating to the US in August, and I am currently seeking work in analysis in Providence, RI, and demonstrable analytical ability is helpful to that pursuit, a small investigation seemed appropriate - and so here we are.
 
 ---
 
@@ -94,4 +94,48 @@ There are a number of blank values across a handful of columns I'm working to ba
 
 ## Initial Excel Decisions
 
-As mentioned above, not all transactions in the data will be relevant and/or useful for this analysis
+As mentioned above, not all transactions in the data will be relevant and/or useful for this analysis, and the goal is to work from expenditure Sum-by-Day, not individual transactions.  So there's some filtering and some aggregating to do.
+
+It's not strictly necessary to do either in one or the other of Excel or R.  Seeing as the pre-export data already live in Excel with easily GUI-filtered columns, it'd probably be easiest to just do that pre-export.
+
+As far as aggregation, I could either pivot my way there and then export, or use a simple script.  In R, the aggregation code would look something like:
+
+```{r echo=TRUE}
+
+## Read in disaggregated Transactions
+Demo <- read.delim("DataExp1.txt")
+
+## Change class on Date and DoW
+Demo[,1] <- as.factor(Demo[,1])
+Demo[,2] <- as.factor(Demo[,2])
+
+## Replace nulls with 0
+Demo[is.na(Demo)] <- 0
+
+## First net Debits and Credits
+Demo$Net <- Demo$Debit + Demo$Credit
+
+## Aggregate transaction lines to Sum-by-Date
+AggDemo <- aggregate(x = Demo$Net, by = list(DoW = Demo$DoW.M.1, DatesList = Demo$Date), FUN = "sum")
+
+## Clean up names
+names(AggDemo) <- c("DoW","Date","NetExp")
+
+## Review
+head(AggDemo)
+
+```
+
+That's not terrible, but this kind of work is so well developed in Excel, no point in reinventing the wheel.  I'll export the filtered, pivoted/aggregated data.
+
+Actually, just before exporting, I can even quickly and easily handle the Workday/Weekend day column I'll need with with a simple IF formula column:
+
+=IF(DoW < 6, TRUE, FALSE)
+
+Great, so now we've got what we want out of Excel (DataExp2.txt).  Let's see what we can find out.
+
+---
+
+## Preliminary analysis
+
+
