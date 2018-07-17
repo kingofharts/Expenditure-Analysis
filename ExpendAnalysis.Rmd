@@ -1,3 +1,8 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
 # Day of Week Prediction Power of Expenditures Analysis
 ## Nicholas Hartman Ponce
 ### nicholas.paul.hartman@gmail.com
@@ -76,7 +81,7 @@ AllColNames
 
 ```
 
-For this analysis I've decided to limit use to four: Date, DoW, Debit, and Credit.  Date will be used to aggregate, rather than for prediction (pretty easy to predict DoW if you know what the date is).  I'll create a derived Weekday col in R using DoW.
+For this analysis I've decided to limit use to four: Date, DoW, Debit, and Credit.  Date will be used to aggregate, rather than for prediction (pretty easy to predict DoW if you know what the date is).
 
 ---
 
@@ -130,12 +135,98 @@ That's not terrible, but this kind of work is so well developed in Excel, no poi
 
 Actually, just before exporting, I can even quickly and easily handle the Workday/Weekend day column I'll need with with a simple IF formula column:
 
-=IF(DoW < 6, TRUE, FALSE)
+=IF(*DoW* < 6, TRUE, FALSE)
+
+Where *DoW* in Excel is the relevant cell reference.
 
 Great, so now we've got what we want out of Excel (DataExp2.txt).  Let's see what we can find out.
 
 ---
 
-## Preliminary analysis
+## Preliminary Analysis
 
+We'll begin by bringing every thing, cleaning/reformatting it, and tidying up the environment as we go:
+
+```{r echo = FALSE, results = 'hide', message = FALSE}
+# Load Libraries
+library(caret)
+library(ellipse)
+library(e1071)
+library(randomForest)
+library(plyr)
+library(sp)
+library(ggplot2)
+```
+```{r echo=TRUE}
+# Load Data
+RawImport <- read.delim("DataExp2.txt", header = TRUE)
+
+# Clean Data
+CleanImport <- RawImport
+
+CleanImport[,1] <- as.factor(CleanImport[,1])
+CleanImport[,2] <- as.factor(CleanImport[,2])
+
+CleanImport[,5] <- CleanImport[,5]*-1
+
+colnames(CleanImport)[1] <- "Date"
+colnames(CleanImport)[2] <- "DoW"
+colnames(CleanImport)[5] <- "Exp"
+
+drops <- c("Date")
+CleanImport <- CleanImport[ , !(names(CleanImport) %in% drops)]
+
+remove(RawImport,drops)
+
+head(CleanImport)
+```
+
+Great!  Now we've got one, clean R data frame:
+
+```{r echo = TRUE}
+dim(CleanImport)
+summary(CleanImport)
+```
+
+4 columns of 1,561 rows to work with.  Let's make a quick visual inspection of the data, starting with Net Expenditure by Day of the Week:
+
+```{r echo = TRUE}
+ExpByDoWBox <- ggplot(CleanImport, aes(x = DoW, y = Exp)) + geom_boxplot()
+ExpByDoWBox
+```
+
+So definitely skewed, lots of outliers, but not really surprising, since it's intuitive that there would be many fewer sub-zero expenditure days than high-spend days.
+
+Some cause for prediction concern for the weekdays; Monday through Thursday's boxes are pretty similar.  On the other hand, some cause for hope on the Weekday/Weekend front, although Friday could throw a wrench in that.  Let's take a look at transaction counts:
+
+```{r echo = TRUE}
+CountByDoWBox <- ggplot(CleanImport, aes(x = DoW, y = Count)) + geom_boxplot()
+CountByDoWBox
+```
+
+Hmm.  So still a bit of a difference between the week and the weekend, but neither substantial nor really distinct.  Let's try one other approach:
+
+```{r echo = TRUE}
+x <- as.matrix(CleanImport[,c(3:4)])
+y <- factor(CleanImport$DoW)
+featurePlot(x, y, plot = "ellipse")
+```
+
+Still not much separation.  One last look:
+
+```{r echo = TRUE}
+x <- as.matrix(CleanImport[,c(3:4)])
+y <- factor(CleanImport$Weekday)
+featurePlot(x, y, plot = "ellipse")
+```
+
+Uf, not looking good just on these variables.  We can see some of the higher Weekend values (blue) scattering out to the top/right, but we've still got a lot of overlap with Weekdays.
+
+It seems a safe bet that the answer is 'no', but let's check one other thing:
+
+
+
+---
+
+## Prep for Model Training
 

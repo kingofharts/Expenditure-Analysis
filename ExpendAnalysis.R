@@ -8,7 +8,7 @@ library(sp)
 
 
 # Load Data
-RawImport <- read.delim("Data2.txt", header = TRUE)
+RawImport <- read.delim("DataExp2.txt", header = TRUE)
 
 # Evaluate Load
 head(RawImport)
@@ -33,7 +33,6 @@ colnames(CleanImport)[5] <- "Exp"
 remove(i,classes,cleanclasses)
 drops <- c("Date")
 CleanImport <- CleanImport[ , !(names(CleanImport) %in% drops)]
-remove(i,classes,cleanclasses,drops)
 
 
 # Partition Data
