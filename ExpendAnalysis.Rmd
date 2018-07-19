@@ -222,11 +222,25 @@ featurePlot(x, y, plot = "ellipse")
 
 Uf, not looking good just on these variables.  We can see some of the higher Weekend values (blue) scattering out to the top/right, but we've still got a lot of overlap with Weekdays.
 
-It seems a safe bet that the answer is 'no', but let's check one other thing:
-
-
-
 ---
 
-## Prep for Model Training
+## Statistical Review
 
+An ANOVA on the data (Count/Exp vs. DoW) seem the next logical step, but we should probably check the distributions first before settling on that.  Let's look at this another way to get a sense how off of Normal the distributions are:
+
+```{r echo = TRUE}
+## Arrange Data for Plotting
+x <- as.matrix(CleanImport[,c(3:4)])
+y <- factor(CleanImport$DoW)
+
+## Plot
+featurePlot(x, y, plot = "density", 
+            scales = list(x = list(relation = "free"),
+                          y = list(relation = "free"))
+            )
+```
+
+So we can see the skew, but it's not multi-modal or otherwise bizarrely shaped.  Let's get a sense of the distribution of the residuals:
+
+ANOVAModel <- aov(Count ~ DoW, CleanImport)
+Residuals <- resid(ANOVAModel)
