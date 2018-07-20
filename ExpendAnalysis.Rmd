@@ -1,7 +1,7 @@
 ---
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 # Day of Week Prediction Power of Expenditures Analysis
 ## Nicholas Hartman Ponce
@@ -242,5 +242,23 @@ featurePlot(x, y, plot = "density",
 
 So we can see the skew, but it's not multi-modal or otherwise bizarrely shaped.  Let's get a sense of the distribution of the residuals:
 
-ANOVAModel <- aov(Count ~ DoW, CleanImport)
-Residuals <- resid(ANOVAModel)
+```{r echo = TRUE}
+## Setup Residuals Matrix
+Residuals <- matrix(nrow = 1561, ncol = 2)
+
+## Populate Residuals
+Residuals[,1] <- resid(aov(Exp ~ DoW, CleanImport))
+Residuals[,2] <- resid(aov(Count ~ DoW, CleanImport))
+
+## Tee-up DoW factors
+Variable <- factor(CleanImport$DoW)
+
+## Plot Residuals
+featurePlot(Residuals, Variable, plot = "density", 
+            scales = list(x = list(relation = "free"),
+                          y = list(relation = "free")))
+```
+
+Better, but clearly not normal.  Some skew, and some inconsistent peaks.
+
+So with non-Normal residuals distributions, one-way ANOVA evaluation of the DoW factors is out.  
