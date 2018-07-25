@@ -1,7 +1,7 @@
 ---
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 # Day of Week Prediction Power of Expenditures Analysis
 ## Nicholas Hartman Ponce
@@ -261,4 +261,22 @@ featurePlot(Residuals, Variable, plot = "density",
 
 Better, but clearly not normal.  Some skew, and some inconsistent peaks.
 
-So with non-Normal residuals distributions, one-way ANOVA evaluation of the DoW factors is out.  
+So with non-Normal residuals distributions, one-way ANOVA evaluation of the DoW factors is out.  There are a variety of other ways to test whether there's any difference in the samples given non-normality.  I'll use Kruskal-Wallis testing:
+
+```{r echo = TRUE}
+kruskal.test(Count ~ DoW, CleanImport)
+kruskal.test(Exp ~ DoW, CleanImport)
+```
+
+So it looks like at least one DoW group is statistically distinct from the others for both Count and Net Expenditure.  That's something!
+
+It would be handy to know where the dividing lines were if we're going to make anything useful of this.  Since we've rejected the null for both measures, let's run a Conover-Iman test to see where we see pair-wise differences:
+
+```{r echo = FALSE, results = 'hide', message = FALSE}
+# Load Libraries
+library(conover.test)
+```
+```{r echo = TRUE}
+conover.test(x = CleanImport$Count, g = CleanImport$DoW, list = TRUE, altp = TRUE)
+conover.test(x = CleanImport$Exp, g = CleanImport$DoW, list = TRUE, altp = TRUE)
+```
